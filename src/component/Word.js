@@ -21,7 +21,6 @@ function Word({ word: w }) {
                 isDone: !isDone
             })
         }).then(res => {
-            console.log(res);
             if(res.ok) {
                 setIsDone(!isDone);
             }
