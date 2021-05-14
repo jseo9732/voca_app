@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import UserFetch from "../hooks/userFetch";
 
 function DayList(){
-    const days = UserFetch("http://localhost:3001/days")
+    const days = UserFetch("http://localhost:3001/days");
+
+    if(days.length === 0) {
+        return <span> loading...</span>;
+    }
 
     return(
         <>

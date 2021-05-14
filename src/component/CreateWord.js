@@ -1,31 +1,36 @@
 import UserFetch from "../hooks/userFetch";
-import { useRef } from  "react";
+import { useRef, useState } from  "react";
 import { useHistory } from "react-router";
 
 function CreateWord() {
     const days = UserFetch("http://localhost:3001/days");
     const history = useHistory();
-
+    const [isLoading, setIsLoading] = useState(false);
+    
     function onSubmit(e){
         e.preventDefault();
 
-        fetch(`http://localhost:3001/words`, {
-            method: "POST",
-            headers: {
-                "content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                day: dayRef.current.value,
-                eng: engRef.current.value,
-                kor: korRef.current.value,
-                isDone: false
-            })
-        }).then(res => {
-            if(res.ok) {
-                alert("생성이 완료 되었습니다.");
-                history.push(`/day/${dayRef.current.value}`)
-            }
-        });
+        if (!isLoading) {
+            setIsLoading(true);
+            fetch(`http://localhost:3001/words`, {
+                method: "POST",
+                headers: {
+                    "content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    day: dayRef.current.value,
+                    eng: engRef.current.value,
+                    kor: korRef.current.value,
+                    isDone: false
+                })
+            }).then(res => {
+                if(res.ok) {
+                    alert("생성이 완료 되었습니다.");
+                    history.push(`/day/${dayRef.current.value}`);
+                    setIsLoading(false);
+                }
+            });
+        }
     }
 
     const engRef = useRef(null);
@@ -50,7 +55,12 @@ function CreateWord() {
                     ))}
                 </select>
             </div>
-            <button>저장</button>
+            <button
+                style={{
+                    opacity: isLoading ? 0.3 : 1
+                }}>
+                { isLoading ? "Saving..." : "저장" }
+            </button>
         </form>
     );
 }
